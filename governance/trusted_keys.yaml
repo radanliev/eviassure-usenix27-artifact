@@ -1,0 +1,8 @@
+# Trusted signing key registry for the release policy engine.
+# key_id -> pinned Ed25519 public key (base64). Signatures from keys not
+# listed here are rejected; the public key embedded in a submitted evidence
+# bundle is never trusted — verification always uses the pinned key.
+trusted_keys:
+  KEY-6d1f9bcd0679:
+    public_key: 62FM4fJtlgjFi7h4FgZID3mUUz0D1roow0hNFFfFU6o=
+    description: "EviAssure demo signing key (static, test-only)"

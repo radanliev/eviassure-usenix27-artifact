@@ -1,0 +1,50 @@
+{
+  "_type": "layout",
+  "keys": {
+    "KEY-DEMO-ED25519": {
+      "keytype": "ed25519",
+      "scheme": "ed25519",
+      "keyval": {
+        "public": "DEMO_PUB_KEY_BASE64_PLACEHOLDER"
+      }
+    }
+  },
+  "steps": [
+    {
+      "name": "agent-execution-trace-capture",
+      "expected_materials": [],
+      "expected_products": [
+        ["CREATE", "execution_traces.json"]
+      ],
+      "pubkeys": ["KEY-DEMO-ED25519"],
+      "expected_command": ["python3", "specimens/agent_runner.py"],
+      "threshold": 1
+    },
+    {
+      "name": "package-evidence-bundle",
+      "expected_materials": [
+        ["MATCH", "execution_traces.json", "WITH", "PRODUCTS", "FROM", "agent-execution-trace-capture"]
+      ],
+      "expected_products": [
+        ["CREATE", "evidence_pack.json"]
+      ],
+      "pubkeys": ["KEY-DEMO-ED25519"],
+      "expected_command": ["python3", "scripts/package_evidence.py"],
+      "threshold": 1
+    }
+  ],
+  "inspect": [
+    {
+      "name": "usenix-security-release-gate-eval",
+      "expected_materials": [
+        ["MATCH", "evidence_pack.json", "WITH", "PRODUCTS", "FROM", "package-evidence-bundle"]
+      ],
+      "expected_products": [
+        ["CREATE", "release_decision.json"]
+      ],
+      "run": ["python3", "scripts/verify_release_gate.py"]
+    }
+  ],
+  "expires": "2027-12-31T23:59:59Z",
+  "readme": "USENIX Security 2027 In-Toto Supply Chain Layout Specification for Autonomous Agent Deployments"
+}

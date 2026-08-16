@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "demo-5-evidence-release-assurance-usenix"
+version = "0.1.0"
+description = "USENIX Security evidence-backed release assurance and deployment gate harness"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pyyaml>=6.0",
+    "matplotlib>=3.5.0",
+    "cryptography>=42.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "hypothesis>=6.0",
+    "mutmut>=3.0",
+    "bandit>=1.7",
+    "mypy>=1.8"
+]
+
+[tool.setuptools]
+# Explicit package list: flat-layout auto-discovery fails on this repo
+# (corpus/, results/, governance/ are data, not packages), which broke
+# `pip install -e .` — the reproduction step in the paper's appendix.
+packages = ["assurance", "benchmark", "specimens"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.mutmut]
+paths_to_mutate = ["assurance/policy.py"]
+tests_dir = ["tests"]
