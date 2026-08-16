@@ -61,7 +61,8 @@ def test_privacy_trace_blinding():
     bundle = create_evidence_pack(blind_privacy=True, privacy_salt="custom-salt-99", signed=True)
     assert bundle.signed is True
     assert bundle.verify_signature() is True
-    assert "BLINDED-" in bundle.traces[0]["output_hash"]
+    assert len(bundle.traces[0]["output_hash"]) == 64
+    assert bundle.traces[0].get("raw_payload") is None
 
 
 def test_sparse_merkle_proof_generation():
@@ -70,4 +71,3 @@ def test_sparse_merkle_proof_generation():
     assert len(proofs) == 2
     assert proofs[0]["index"] == 0
     assert "proof_path" in proofs[0]
-

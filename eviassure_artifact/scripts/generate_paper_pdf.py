@@ -53,7 +53,7 @@ def generate_benchmark_figures(docs_dir: Path):
     plt.tick_params(labelsize=8)
     plt.xlabel('Trace Count N (log scale)', fontsize=9)
     plt.ylabel('Time (ms, log scale)', fontsize=9)
-    plt.title('Attestation Scaling up to N=1,000,000 Traces', fontsize=9, fontweight='bold')
+    plt.title('Attestation Scaling up to N=1,000,000 Traces', fontsize=8.5, fontweight='bold')
     plt.grid(True, which="both", ls="--", alpha=0.5)
     plt.legend(fontsize=8)
     plt.tight_layout()
@@ -73,6 +73,7 @@ def generate_benchmark_figures(docs_dir: Path):
     plt.xlabel('Process Pool Size (workers)', fontsize=9)
     plt.ylabel('Verifier Throughput (ops/sec)', fontsize=9)
     plt.title('Multi-Core Parallel Verification Throughput', fontsize=9, fontweight='bold')
+    plt.ylim(0, max(ops) * 1.25)
     plt.grid(axis='y', ls="--", alpha=0.5)
     for i, v in enumerate(ops):
         plt.text(i, v + 100, f"{int(v)}/s", ha='center', fontweight='bold', fontsize=8)
@@ -97,6 +98,7 @@ def generate_benchmark_figures(docs_dir: Path):
     for bar, hatch in zip(bars, hatches):
         bar.set_hatch(hatch)
     plt.tick_params(labelsize=7)
+    plt.xticks(rotation=20, ha='right')
     plt.ylabel('Fail-Closed Block Rate (%)', fontsize=9)
     plt.title('Adversarial Release Tamper Detection (12 Vectors)', fontsize=9, fontweight='bold')
     plt.ylim(0, 115)

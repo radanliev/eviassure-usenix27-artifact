@@ -7,12 +7,12 @@ from assurance.policy import ReleasePolicyEngine
 from benchmark.tamper_vectors import generate_tampered_evidence_suite, TAMPER_VECTOR_TAXONOMY
 
 
-def test_tamper_resilience_suite_12_vectors():
+def test_tamper_resilience_suite_13_vectors():
     policy_path = Path(__file__).parent.parent / "governance" / "release_policy.yaml"
     policy_engine = ReleasePolicyEngine.from_yaml(policy_path)
 
     tamper_suite = generate_tampered_evidence_suite()
-    assert len(tamper_suite) == 12, "Tamper suite must contain exactly 12 vectors!"
+    assert len(tamper_suite) == 13, "Tamper suite must contain exactly 13 vectors!"
 
     seen_nonces = set()
 

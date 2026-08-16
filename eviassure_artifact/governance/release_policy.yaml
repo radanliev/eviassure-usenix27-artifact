@@ -1,7 +1,7 @@
 # USENIX Security 2027 Fail-Closed Release Gate Policy
 policy_name: USENIX Security Fail-Closed Release Gate Policy
 version: 1.0.0
-author: Oxford / Newcastle Security Research Group
+author: Anonymous Reviewers
 
 release_conditions:
   require_signed_evidence: true

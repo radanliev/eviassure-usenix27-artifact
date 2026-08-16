@@ -86,5 +86,4 @@ def test_blinding_tag_is_256_bit():
                                status="SUCCESS", duration_ms=1.0,
                                output_hash=hash_sha256("secret payload"))
     blinded = rec.blind_payload("s" * 32).output_hash
-    assert blinded.startswith("BLINDED-")
-    assert len(blinded) == len("BLINDED-") + 64
+    assert len(blinded) == 64

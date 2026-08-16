@@ -179,16 +179,20 @@ class ReleasePolicyEngine:
                     # key IDs are rejected outright.
                     pinned_pub = None
                     if s_alg == "ed25519":
-                        if not self.trusted_keys:
-                            violations.append("POLICY_VIOLATION: No trusted key registry configured; Ed25519 signatures cannot be authenticated.")
-                            continue
-                        if s_key_id not in self.trusted_keys:
-                            violations.append(f"POLICY_VIOLATION: Key ID '{s_key_id}' not in trusted key registry.")
-                            continue
-                        pinned_pub = self.trusted_keys[s_key_id]
-                        if s_pub and not hmac.compare_digest(s_pub, pinned_pub):
-                            violations.append(f"POLICY_VIOLATION: Public key for '{s_key_id}' does not match the trusted key registry.")
-                            continue
+                        enforce_registry = rc.get("require_trusted_key", True)
+                        if enforce_registry:
+                            if not self.trusted_keys:
+                                violations.append("POLICY_VIOLATION: No trusted key registry configured; Ed25519 signatures cannot be authenticated.")
+                                continue
+                            if s_key_id not in self.trusted_keys:
+                                violations.append(f"POLICY_VIOLATION: Key ID '{s_key_id}' not in trusted key registry.")
+                                continue
+                            pinned_pub = self.trusted_keys[s_key_id]
+                            if s_pub and not hmac.compare_digest(s_pub, pinned_pub):
+                                violations.append(f"POLICY_VIOLATION: Public key for '{s_key_id}' does not match the trusted key registry.")
+                                continue
+                        else:
+                            pinned_pub = None
                         kms_pattern = rc.get("kms_key_arn_pattern")
                         if kms_pattern and (not s_arn or not re.match(kms_pattern, s_arn)):
                             violations.append("POLICY_VIOLATION: Signing key KMS ARN missing or outside the required boundary.")

@@ -132,16 +132,21 @@ def main():
         })
 
     # Summary Statistics
-    ci_block_rate = (sum(1 for r in results if r["ci_exit_code_blocked"]) / len(results)) * 100.0
-    opa_block_rate = (sum(1 for r in results if r["opa_schema_blocked"]) / len(results)) * 100.0
-    cosign_block_rate = (sum(1 for r in results if r["sigstore_cosign_blocked"]) / len(results)) * 100.0
-    demo5_block_rate = (sum(1 for r in results if r["demo5_assurance_blocked"]) / len(results)) * 100.0
+    ci_blocks = sum(1 for r in results if r["ci_exit_code_blocked"])
+    opa_blocks = sum(1 for r in results if r["opa_schema_blocked"])
+    sigstore_blocks = sum(1 for r in results if r["sigstore_cosign_blocked"])
+    evi_blocks = sum(1 for r in results if r["demo5_assurance_blocked"])
 
-    print("\n--- Comparative Detection Rates Across 12 Tamper Attack Vectors ---")
-    print(f"1. Standard CI Exit Code Gate:       {ci_block_rate:6.1f}% Block Rate ({sum(1 for r in results if r['ci_exit_code_blocked'])}/12)")
-    print(f"2. OPA / Kyverno Schema Validator:  {opa_block_rate:6.1f}% Block Rate ({sum(1 for r in results if r['opa_schema_blocked'])}/12)")
-    print(f"3. Sigstore / Cosign Artifact Gate: {cosign_block_rate:6.1f}% Block Rate ({sum(1 for r in results if r['sigstore_cosign_blocked'])}/12)")
-    print(f"4. Demo 5 Evidence Assurance Gate:  {demo5_block_rate:6.1f}% Block Rate ({sum(1 for r in results if r['demo5_assurance_blocked'])}/12)")
+    ci_rate = (ci_blocks / len(results)) * 100.0
+    opa_rate = (opa_blocks / len(results)) * 100.0
+    sigstore_rate = (sigstore_blocks / len(results)) * 100.0
+    evi_rate = (evi_blocks / len(results)) * 100.0
+
+    print(f"\n--- Comparative Detection Rates Across {len(results)} Tamper Attack Vectors ---")
+    print(f"1. Standard CI Exit Code Gate:       {ci_rate:6.1f}% Block Rate ({ci_blocks}/{len(results)})")
+    print(f"2. OPA / Kyverno Schema Validator:  {opa_rate:6.1f}% Block Rate ({opa_blocks}/{len(results)})")
+    print(f"3. Sigstore / Cosign Artifact Gate: {sigstore_rate:6.1f}% Block Rate ({sigstore_blocks}/{len(results)})")
+    print(f"4. Demo 5 Evidence Assurance Gate:  {evi_rate:6.1f}% Block Rate ({evi_blocks}/{len(results)})")
 
     out_file = Path(__file__).parent.parent / "results" / "comparative_evaluation.json"
     out_file.parent.mkdir(parents=True, exist_ok=True)
@@ -155,10 +160,11 @@ def main():
             "sigstore_cosign_gate": "modeled (artifact-signature presence)",
         },
         "summary": {
-            "ci_exit_code_block_rate_pct": ci_block_rate,
-            "opa_schema_block_rate_pct": opa_block_rate,
-            "sigstore_cosign_block_rate_pct": cosign_block_rate,
-            "demo5_assurance_block_rate_pct": demo5_block_rate
+            "total_vectors_evaluated": len(results),
+            "ci_exit_code_block_rate_pct": ci_rate,
+            "opa_schema_block_rate_pct": opa_rate,
+            "sigstore_cosign_block_rate_pct": sigstore_rate,
+            "demo5_assurance_block_rate_pct": evi_rate
         },
         "details": results
     }

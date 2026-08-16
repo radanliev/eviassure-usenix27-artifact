@@ -65,7 +65,7 @@ def test_blinding_structure_and_variance(payload, salt):
                                status="SUCCESS", duration_ms=1.0,
                                output_hash=hash_sha256(payload))
     b1 = rec.blind_payload(salt).output_hash
-    assert b1.startswith("BLINDED-") and len(b1) == len("BLINDED-") + 64
+    assert len(b1) == 64
     b2 = rec.blind_payload(salt + "!").output_hash
     if payload != "":
         assert b1 != b2

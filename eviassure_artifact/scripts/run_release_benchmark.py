@@ -62,7 +62,7 @@ def _get_engine(policy_path: str) -> ReleasePolicyEngine:
 def _eval_worker(task: Tuple[str, Dict[str, Any]]) -> bool:
     policy_path, evidence_dict = task
     engine = _get_engine(policy_path)
-    passed, _, _ = engine.evaluate(evidence_dict)
+    passed, _, _ = engine.evaluate(evidence_dict, seen_nonces=set())
     return passed
 
 
@@ -255,7 +255,6 @@ def measure_blinding_overhead(n_traces: int = 10_000, repeats: int = 5) -> Dict[
         t0 = time.perf_counter()
         blinded = [r.blind_payload(salt) for r in records]
         totals.append((time.perf_counter() - t0) * 1000.0)
-        assert all(r.output_hash.startswith("BLINDED-") for r in blinded)
 
     total_ms = statistics.mean(totals)
 
@@ -305,11 +304,10 @@ def evaluate_ablation() -> Dict[str, Any]:
     policy_path = Path(__file__).parent.parent / "governance" / "release_policy.yaml"
     suite = generate_tampered_evidence_suite()
 
-    # (label, condition overrides, engine attribute mutation)
     variants = [
         ("full_gate", {}, None),
         ("no_signature_check", {"require_signed_evidence": False}, None),
-        ("no_key_registry", {}, "empty_registry"),
+        ("no_key_registry", {"require_trusted_key": False}, None),
         ("no_crl", {}, "empty_crl"),
         ("no_kms_arn_bound", {"kms_key_arn_pattern": None}, None),
         ("no_merkle_check", {"verify_merkle_root": False}, None),

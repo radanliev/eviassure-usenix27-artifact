@@ -6,3 +6,6 @@ trusted_keys:
   KEY-6d1f9bcd0679:
     public_key: 62FM4fJtlgjFi7h4FgZID3mUUz0D1roow0hNFFfFU6o=
     description: "EviAssure demo signing key (static, test-only)"
+  KEY-REVOKED-9999:
+    public_key: 62FM4fJtlgjFi7h4FgZID3mUUz0D1roow0hNFFfFU6o=
+    description: "Revoked demo signing key for testing"
